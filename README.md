@@ -3,15 +3,15 @@
 ### 1. Clone helm Charts 
     git clone https://github.com/msa-ez/on-prem-helm.git
 ---
-### 2. Create & Connect GCP Cluster
+### 2. Create & Connect Kubernetes Cluster
 ---
-### 3. on-prem 설치 
-  - Cluseter ip: ```kubeclt cluseter-info```
-  - Domain: Route53 도메인 중 사용할 도메인 
+### 3. helm chart 기반 MSA-Easy 설치 
+  - Cluster ip: ```kubectl cluster-info```
+  - Domain: DNS 서비스에서 보유한 도메인 주소 
   - token: ```kubectl describe secret default```
     #### 1. yaml 파일 별 수정 필요 내용 
-    - <b>deployment.yaml</b>: Cluseter ip, Domain, token
-    - <b>values.yaml</b>: Cluseter ip, Domain
+    - <b>deployment.yaml</b>: Cluster ip, Domain, token
+    - <b>values.yaml</b>: Cluster ip, Domain
     - <b>2q</b>: Domain  
     - <b>ingress.yaml</b>: Domain 
     - <b>issuer.yaml</b> Domain
@@ -27,7 +27,7 @@
         --namespace ingress-nginx --create-namespace
     ```
 ---
-### 4. Route53 도메인 record 생성 & 설정
+### 4. DNS 서비스 도메인 record 생성 & 설정
   #### 1. Create Record 
   ![createRecord1](https://user-images.githubusercontent.com/65217813/192461326-ad37d114-cc4e-4fb8-8813-f45270e31c7d.png)
    - gitlab, kas, minio, registry, *, api, www, file, acebase 각 Record 생성 
@@ -41,12 +41,14 @@
    - 등록할 IP: ```kubectl get svc -n ingress-nginx```/ external-ip 
    - 위와 동일한 방법으로 수정 
 ---
-### 5. cd ide-operator
+### 5. ide 관련 operator 설치
   #### 1. Operator 설치
+    cd ide-operator
     make deploy IMG=gcr.io/eventstorming-tool/theia-ide-lab:v137
 ---
-### 6. cd gcp_helm
+### 6. NFS 설치
   #### 1. <b>values.yaml/disk</b> 수정(클러스터에 연결할 disk 명으로 수정)
   #### 2. nfs 설치 
+    cd gcp_helm
     helm install gcp-msaez .
 ---
